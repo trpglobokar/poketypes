@@ -1,7 +1,9 @@
 import React from "react"
+import { renderToString } from "react-dom/server"
 import * as d3 from "d3"
 import poketypejson from "./pokemon-types.json"
 import "./App.css"
+import LegenDary from "./legend.js"
 
 const WRAPPER_RADIUS = 300 //390
 const CHORD_RADIUS = WRAPPER_RADIUS - 85
@@ -89,11 +91,15 @@ class ChordChart extends React.Component {
       .html((d.source.value + d.target.value) / 2)
 
       
-    
+    /*d3.select("#chord-legend-content2")
+      .html(pokenames.join("<br /> "))*/
+
+    const jones = (<LegenDary
+      pokenames={pokenames}
+    />)
+
     d3.select("#chord-legend-content2")
-      .html(
-        pokenames.join("<br /> ")
-      )
+      .html(renderToString(jones))
   }
 
   drawChart() {
