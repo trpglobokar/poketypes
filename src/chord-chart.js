@@ -5,7 +5,7 @@ import poketypejson from "./pokemon-types.json"
 import "./App.css"
 import LegenDary from "./legend.js"
 
-const WRAPPER_RADIUS = 300 //390
+const WRAPPER_RADIUS = 350 //390
 const CHORD_RADIUS = WRAPPER_RADIUS - 85
 
 class ChordChart extends React.Component {
@@ -76,30 +76,10 @@ class ChordChart extends React.Component {
 
   renderLegend(d) {
     const pokemon = this.props.pokematrix2[d.source.index][d.target.index]
-    /*const pokenames = pokemon.map(poke => {
-      return `<img src="https://img.pokemondb.net/sprites/sun-moon/icon/${poke.name.english.toLowerCase()}.png" /> ${
-        poke.name.english
-      }`
-    })*/
-    const pokenames = pokemon.map(poke => poke.name.english)
-
-    d3.select("#poketype1")
-      .html(poketypejson[d.source.index].name)
-    d3.select("#poketype2")
-      .html(poketypejson[d.target.index].name)
-    d3.select("#num-of-pokes")
-      .html((d.source.value + d.target.value) / 2)
-
-      
-    /*d3.select("#chord-legend-content2")
-      .html(pokenames.join("<br /> "))*/
-
-    const jones = (<LegenDary
-      pokenames={pokenames}
-    />)
-
-    d3.select("#chord-legend-content2")
-      .html(renderToString(jones))
+    const legendContent = (
+      <LegenDary source={d.source} target={d.target} pokemon={pokemon} />
+    )
+    d3.select("#chord-legend-content").html(renderToString(legendContent))
   }
 
   drawChart() {
@@ -131,11 +111,17 @@ class ChordChart extends React.Component {
       .attr("d", d3.ribbon().radius(CHORD_RADIUS))
       .style("fill", d => `${poketypejson[d.source.index].color}55`)
       .on("mouseover", d => {
-        d3.select(d3.event.currentTarget).style("fill", poketypejson[d.source.index].color)
+        d3.select(d3.event.currentTarget).style(
+          "fill",
+          poketypejson[d.source.index].color
+        )
         this.renderLegend(d)
       })
       .on("mouseleave", d => {
-        d3.select(d3.event.currentTarget).style("fill", `${poketypejson[d.source.index].color}55`)
+        d3.select(d3.event.currentTarget).style(
+          "fill",
+          `${poketypejson[d.source.index].color}55`
+        )
       })
 
     // Declare group object that represents each type group
@@ -201,20 +187,14 @@ class ChordChart extends React.Component {
         <div id="chord-chart" />
         <div
           id="chord-legend-wrapper"
-          style={{ width: `calc(100% - ${WRAPPER_RADIUS * 2}px)`, minHeight: "100vh", borderLeft: "1px solid #ccc" }}
+          style={{
+            width: `calc(100% - ${WRAPPER_RADIUS * 2}px)`,
+            minHeight: "100vh",
+            borderLeft: "1px solid #ccc",
+          }}
         >
           <div id="chord-legend-content" style={{ padding: 16 }}>
-            <h3>Legend Stuff</h3>
-            <div>
-              <b>Type 1:</b> <span id="poketype1" />&nbsp;&nbsp;&nbsp;
-              <b>Type 2:</b> <span id="poketype2" />
-            </div>
-            <br />
-            <div>
-              <b>Number of Pokes:</b> <span id="num-of-pokes" />
-            </div>
-            <br />
-            <div id="chord-legend-content2" />
+            Hover to start
           </div>
         </div>
       </div>
