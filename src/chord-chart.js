@@ -3,6 +3,9 @@ import * as d3 from "d3"
 import poketypejson from "./pokemon-types.json"
 import "./App.css"
 
+const WRAPPER_RADIUS = 300 //390
+const CHORD_RADIUS = WRAPPER_RADIUS - 85
+
 class ChordChart extends React.Component {
   componentDidMount() {
     this.drawChart()
@@ -69,51 +72,41 @@ class ChordChart extends React.Component {
     return [{ value: poketypejson[d.index].name, angle: k + d.startAngle }]
   }
 
+  renderLegend(d) {
+    const pokemon = this.props.pokematrix2[d.source.index][d.target.index]
+    /*const pokenames = pokemon.map(poke => {
+      return `<img src="https://img.pokemondb.net/sprites/sun-moon/icon/${poke.name.english.toLowerCase()}.png" /> ${
+        poke.name.english
+      }`
+    })*/
+    const pokenames = pokemon.map(poke => poke.name.english)
+
+    d3.select("#poketype1")
+      .html(poketypejson[d.source.index].name)
+    d3.select("#poketype2")
+      .html(poketypejson[d.target.index].name)
+    d3.select("#num-of-pokes")
+      .html((d.source.value + d.target.value) / 2)
+
+      
+    
+    d3.select("#chord-legend-content2")
+      .html(
+        pokenames.join("<br /> ")
+      )
+  }
+
   drawChart() {
-    const { pokematrix, pokematrix2 } = this.props
+    const { pokematrix } = this.props
 
     // Creates the svg area
     const svg = d3
       .select("#chord-chart")
       .append("svg")
-      .attr("width", 640)
-      .attr("height", 640)
+      .attr("width", WRAPPER_RADIUS * 2)
+      .attr("height", WRAPPER_RADIUS * 2)
       .append("g")
-      .attr("transform", "translate(320,320)")
-
-    // Adds a blank tooltip div
-    const tooltip = d3
-      .select("#chord-chart")
-      .append("div")
-      .attr("class", "tooltip")
-      .style("background-color", "white")
-      .style("border", "solid")
-      .style("border-width", "1px")
-      .style("border-radius", "5px")
-      .style("padding", "10px")
-
-    const showTooltip = function(d) {
-      const pokemon = pokematrix2[d.source.index][d.target.index]
-      const pokenames = pokemon.map(poke => {
-        return `<img src="https://img.pokemondb.net/sprites/sun-moon/icon/${poke.name.english.toLowerCase()}.png" /> ${
-          poke.name.english
-        }`
-      })
-      tooltip
-        .style("opacity", 1)
-        .html(
-          "Type 1: " +
-            poketypejson[d.source.index].name +
-            "<br>Type 2: " +
-            poketypejson[d.target.index].name +
-            "<br><br>Num of Pokes:" +
-            (d.source.value + d.target.value) / 2 +
-            "<br><br>" +
-            pokenames.join("<br /> ")
-        )
-        .style("left", d3.event.pageX + 15 + "px")
-        .style("top", d3.event.pageY - 28 + "px")
-    }
+      .attr("transform", `translate(${WRAPPER_RADIUS},${WRAPPER_RADIUS})`)
 
     // Passes matrix to d3.chord(); calculates info needed to draw arc and ribbon
     const res = d3
@@ -129,10 +122,15 @@ class ChordChart extends React.Component {
       .data(d => d)
       .enter()
       .append("path")
-      .attr("d", d3.ribbon().radius(200))
+      .attr("d", d3.ribbon().radius(CHORD_RADIUS))
       .style("fill", d => `${poketypejson[d.source.index].color}55`)
-      .on("mouseover", showTooltip)
-    //.on("mouseleave", hideTooltip )
+      .on("mouseover", d => {
+        d3.select(d3.event.currentTarget).style("fill", poketypejson[d.source.index].color)
+        this.renderLegend(d)
+      })
+      .on("mouseleave", d => {
+        d3.select(d3.event.currentTarget).style("fill", `${poketypejson[d.source.index].color}55`)
+      })
 
     // Declare group object that represents each type group
     const group = svg
@@ -151,8 +149,8 @@ class ChordChart extends React.Component {
         "d",
         d3
           .arc()
-          .innerRadius(180)
-          .outerRadius(200)
+          .innerRadius(CHORD_RADIUS - 20)
+          .outerRadius(CHORD_RADIUS)
       )
 
     // Add the ticks
@@ -162,7 +160,7 @@ class ChordChart extends React.Component {
       12.5,
       101,
       9,
-      200,
+      CHORD_RADIUS,
       this.getTicks,
       this.appendLine
     )
@@ -174,7 +172,7 @@ class ChordChart extends React.Component {
       25,
       100,
       9,
-      200,
+      CHORD_RADIUS,
       this.getTicks,
       this.appendText
     )
@@ -185,7 +183,7 @@ class ChordChart extends React.Component {
       1,
       2,
       12,
-      230,
+      CHORD_RADIUS + 30,
       this.getTypeLabels,
       this.appendText
     )
@@ -193,11 +191,26 @@ class ChordChart extends React.Component {
 
   render() {
     return (
-      <div>
+      <div style={{ display: "flex", flexDirection: "row" }}>
+        <div id="chord-chart" />
         <div
-          id="chord-chart"
-          style={{ display: "flex", flexDirection: "row" }}
-        />
+          id="chord-legend-wrapper"
+          style={{ width: `calc(100% - ${WRAPPER_RADIUS * 2}px)`, minHeight: "100vh", borderLeft: "1px solid #ccc" }}
+        >
+          <div id="chord-legend-content" style={{ padding: 16 }}>
+            <h3>Legend Stuff</h3>
+            <div>
+              <b>Type 1:</b> <span id="poketype1" />&nbsp;&nbsp;&nbsp;
+              <b>Type 2:</b> <span id="poketype2" />
+            </div>
+            <br />
+            <div>
+              <b>Number of Pokes:</b> <span id="num-of-pokes" />
+            </div>
+            <br />
+            <div id="chord-legend-content2" />
+          </div>
+        </div>
       </div>
     )
   }

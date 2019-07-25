@@ -51,7 +51,6 @@ class App extends React.Component {
           pokematrix={this.state.pokematrix}
           pokematrix2={this.state.pokematrix2}
         />
-        <div id="type_container">Bob</div>
       </div>
     )
   }
