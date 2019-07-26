@@ -2,28 +2,29 @@ import React from "react"
 import genJson from "./pokemon-gens.json"
 import {
   AppBar,
+  Button,
   Checkbox,
   FormControlLabel,
-  Tab,
-  Tabs,
+  Toolbar,
   Typography,
 } from "@material-ui/core"
-
+import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown"
+import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp"
 
 class App extends React.Component {
   constructor(props) {
     super(props)
 
     this.state = {
-      tabValue: null,
+      activeButtonId: "",
     }
   }
 
-  changeTab = (_e, newValue) => {
-    if (this.state.tabValue === newValue) {
-      this.setState({ tabValue: null })
+  toggleButton = activeButtonId => {
+    if (this.state.activeButtonId === activeButtonId) {
+      this.setState({ activeButtonId: "" })
     } else {
-      this.setState({ tabValue: newValue })
+      this.setState({ activeButtonId })
     }
   }
 
@@ -40,14 +41,33 @@ class App extends React.Component {
     setSelectedGenIds(selectedGenIds)
   }
 
+  renderButtons = (id, label) => {
+    const ArrowIcon =
+      this.state.activeButtonId === id ? ArrowDropUpIcon : ArrowDropDownIcon
+
+    return (
+      <Button
+        color="inherit"
+        value={id}
+        onClick={() => {
+          this.toggleButton(id)
+        }}
+      >
+        {label}
+        <ArrowIcon />
+      </Button>
+    )
+  }
 
   renderTabContent = (index, content) => {
-    const { tabValue } = this.state
+    const { activeButtonId } = this.state
+    console.log("activeButtonId", activeButtonId)
+
     return (
       <Typography
         component="div"
         role="tabpanel"
-        hidden={tabValue !== index}
+        hidden={activeButtonId !== index}
         id={`simple-tabpanel-${index}`}
         aria-labelledby={`simple-tab-${index}`}
       >
@@ -56,10 +76,8 @@ class App extends React.Component {
     )
   }
 
-
   render() {
     const { selectedGenIds } = this.props
-    const { tabValue } = this.state
 
     const genCheckboxes = genJson.map(gen => {
       return (
@@ -83,18 +101,12 @@ class App extends React.Component {
     return (
       <div>
         <AppBar position="static">
-          {/*<Typography>Showing:</Typography>*/}
-          <Tabs
-            value={tabValue}
-            onChange={this.changeTab}
-            aria-label="simple tabs example"
-          >
-            <Tab label={genLabel} id="gen-tab-1" />
-            <Tab label="Chord Chart" id="other-tab-1" />
-          </Tabs>
+          <Toolbar>
+            {this.renderButtons("genStuff", genLabel)}
+          </Toolbar>
         </AppBar>
-        {this.renderTabContent(0, genCheckboxes)}
-        {this.renderTabContent(1, "Coming Soon")}
+        {this.renderTabContent("genStuff", genCheckboxes)}
+        {this.renderTabContent("typeStuff", "Coming Soon")}
       </div>
     )
   }
