@@ -13,6 +13,15 @@ class ChordChart extends React.Component {
     this.drawChart()
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    //TODO: check if props != nextProps
+    return true
+  }
+
+  componentDidUpdate() {
+    this.drawChart()
+  }
+
   addLabel(
     group,
     className,
@@ -84,6 +93,7 @@ class ChordChart extends React.Component {
 
   drawChart() {
     const { pokematrix } = this.props
+    d3.select("#chord-chart").selectAll("*").remove()
 
     // Creates the svg area
     const svg = d3
