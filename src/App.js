@@ -5,6 +5,27 @@ import ControlTabs from "./control-tabs.js"
 import pokejson from "./pokemon.json"
 import poketypejson from "./pokemon-types.json"
 import genJson from "./pokemon-gens.json"
+import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles"
+
+const theme = createMuiTheme({
+  palette: {
+    primary: { main: "#23B5D3", contrastText: "#FBFBFB" },
+    secondary: { main: "#071013", contrastText: "#FBFBFB" },
+  },
+  typography: {
+    fontFamily: [
+      "typeface-roboto",
+      "Roboto",
+      '"Helvetica Neue"',
+      "Arial",
+      "sans-serif",
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"',
+    ].join(","),
+    useNextVariants: true,
+  },
+})
 
 class App extends React.Component {
   constructor(props) {
@@ -63,7 +84,7 @@ class App extends React.Component {
     }
 
     return (
-      <div>
+      <MuiThemeProvider theme={theme}>
         <ControlTabs
           selectedGenIds={this.state.selectedGenIds}
           setSelectedGenIds={e => {
@@ -71,7 +92,7 @@ class App extends React.Component {
           }}
         />
         <ChordChart pokematrix={pokematrix} pokematrix2={pokematrix2} />
-      </div>
+      </MuiThemeProvider>
     )
   }
 }

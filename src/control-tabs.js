@@ -10,6 +10,12 @@ import {
 } from "@material-ui/core"
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown"
 import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp"
+import styled from "styled-components"
+
+const FilterContent = styled(Typography)`
+  padding: 4px 16px;
+  background: #3f51b533;
+`
 
 class App extends React.Component {
   constructor(props) {
@@ -41,7 +47,7 @@ class App extends React.Component {
     setSelectedGenIds(selectedGenIds)
   }
 
-  renderButtons = (id, label) => {
+  renderFilterButton = (id, label) => {
     const ArrowIcon =
       this.state.activeButtonId === id ? ArrowDropUpIcon : ArrowDropDownIcon
 
@@ -59,12 +65,27 @@ class App extends React.Component {
     )
   }
 
-  renderTabContent = (index, content) => {
-    const { activeButtonId } = this.state
-    console.log("activeButtonId", activeButtonId)
+  renderGenCheckboxes = () => {
+    const { selectedGenIds } = this.props
+    return genJson.map(gen => (
+      <FormControlLabel
+        key={gen.id}
+        control={
+          <Checkbox
+            checked={selectedGenIds.includes(gen.id)}
+            onChange={this.toggleGen}
+            value={gen.id.toString()}
+          />
+        }
+        label={gen.name}
+      />
+    ))
+  }
 
+  renderFilterContent = (index, content) => {
+    const { activeButtonId } = this.state
     return (
-      <Typography
+      <FilterContent
         component="div"
         role="tabpanel"
         hidden={activeButtonId !== index}
@@ -72,41 +93,24 @@ class App extends React.Component {
         aria-labelledby={`simple-tab-${index}`}
       >
         {content}
-      </Typography>
+      </FilterContent>
     )
   }
 
   render() {
     const { selectedGenIds } = this.props
 
-    const genCheckboxes = genJson.map(gen => {
-      return (
-        <FormControlLabel
-          key={gen.id}
-          control={
-            <Checkbox
-              checked={selectedGenIds.includes(gen.id)}
-              onChange={this.toggleGen}
-              value={gen.id.toString()}
-            />
-          }
-          label={gen.name}
-        />
-      )
-    })
-
     //TODO: calculate from multiple names w/out repeating "Gen"
     const genLabel = selectedGenIds.sort().join(", ")
+    const genCheckboxes = this.renderGenCheckboxes()
 
     return (
       <div>
         <AppBar position="static">
-          <Toolbar>
-            {this.renderButtons("genStuff", genLabel)}
-          </Toolbar>
+          <Toolbar>{this.renderFilterButton("generation", genLabel)}</Toolbar>
         </AppBar>
-        {this.renderTabContent("genStuff", genCheckboxes)}
-        {this.renderTabContent("typeStuff", "Coming Soon")}
+        {this.renderFilterContent("generation", genCheckboxes)}
+        {this.renderFilterContent("typeStuff", "Coming Soon")}
       </div>
     )
   }
