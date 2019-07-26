@@ -16,17 +16,58 @@ const genJson = [
   {
     id: "gen1",
     name: "Gen 1",
-    pokemon: [1, 151],
+    range: {
+      start: 1,
+      end: 151,
+    }
   },
   {
     id: "gen2",
     name: "Gen 2",
-    pokemon: [152, 251],
+    range: {
+      start: 152,
+      end: 251,
+    }
   },
   {
     id: "gen3",
     name: "Gen 3",
-    pokemon: [252, 387],
+    range: {
+      start: 252,
+      end: 386,
+    }
+  },
+  {
+    id: "gen4",
+    name: "Gen 4",
+    range: {
+      start: 387,
+      end: 493,
+    }
+  },
+  {
+    id: "gen5",
+    name: "Gen 5",
+    range: {
+      start: 494,
+      end: 649,
+    }
+  },
+  {
+    id: "gen6",
+    name: "Gen 6",
+    range: {
+      start: 650,
+      end: 721,
+    }
+  },
+  {
+    id: "gen7",
+    name: "Gen 7",
+    range: {
+      start: 722,
+      end: 807,
+    }
   },
 ]
 
@@ -57,10 +98,25 @@ class App extends React.Component {
     }
   }
 
+  toggleGen = e => {
+    const selectedGenId = e.target.value
+    let { selectedGenIds } = this.state
+
+    if (selectedGenIds.includes(selectedGenId)) {
+      selectedGenIds = selectedGenIds.filter(id => id !== selectedGenId)
+    } else {
+      selectedGenIds.push(selectedGenId)
+    }
+
+    this.setState({
+      selectedGenIds,
+    })
+  }
+
   renderControlTabs = _e => {
     const { tabValue, selectedGenIds } = this.state
 
-    const jones = genJson.map(gen => {
+    const genCheckboxes = genJson.map(gen => {
       return (
         <FormControlLabel
           key={gen.id}
@@ -76,8 +132,8 @@ class App extends React.Component {
       )
     })
 
-    //TODO: calculate from multiple names
-    const genLabel = selectedGenIds[0]
+    //TODO: calculate from multiple names w/out repeating "Gen"
+    const genLabel = selectedGenIds.sort().join(", ")
 
     return (
       <div>
@@ -92,7 +148,7 @@ class App extends React.Component {
             <Tab label="Chord Chart" id="other-tab-1" />
           </Tabs>
         </AppBar>
-        {this.renderTabContent(0, jones)}
+        {this.renderTabContent(0, genCheckboxes)}
         {this.renderTabContent(1, "Coming Soon")}
       </div>
     )
@@ -113,19 +169,18 @@ class App extends React.Component {
     )
   }
 
-  toggleGen = e => {
-    const newGen = e.target.value
+  getPokeRange = _e => {
+    const { selectedGenIds } = this.state
+    const selectedGens = genJson.filter(gen => selectedGenIds.includes(gen.id))
 
-    this.setState({
-      selectedGenIds: [newGen],
+    let newThing = []
+    selectedGens.forEach(gen => {
+      newThing = newThing.concat(pokejson.slice(gen.range.start, gen.range.end))
     })
+    return newThing
   }
 
   render() {
-    const { selectedGenIds } = this.state
-
-    const selectedGen = genJson.find(gen => gen.id === selectedGenIds[0])
-
     //declare blank matrix
     let pokematrix = []
     let pokematrix2 = []
@@ -138,17 +193,16 @@ class App extends React.Component {
       }
     }
 
-    // create input data: a square matrix that provides flow between entities
-    //for(const poke of pokejson) {
-    for (let i = selectedGen.pokemon[0]; i < selectedGen.pokemon[1]; i++) {
-      let poke = pokejson[i]
+    const pokeRange = this.getPokeRange()
+    // create input data: a square matrix that show links between types
+    for (let poke of pokeRange) {
       if (poke.type.length === 1) {
-        const index0 = poketypejson.findIndex(to => to.name === poke.type[0])
+        const index0 = poketypejson.findIndex(type => type.name === poke.type[0])
         pokematrix[index0][index0] = pokematrix[index0][index0] + 1
         pokematrix2[index0][index0].push(poke)
       } else {
-        const index1 = poketypejson.findIndex(to => to.name === poke.type[0])
-        const index2 = poketypejson.findIndex(to => to.name === poke.type[1])
+        const index1 = poketypejson.findIndex(type => type.name === poke.type[0])
+        const index2 = poketypejson.findIndex(type => type.name === poke.type[1])
         pokematrix[index1][index2] = pokematrix[index1][index2] + 1
         pokematrix[index2][index1] = pokematrix[index2][index1] + 1
         pokematrix2[index1][index2].push(poke)
