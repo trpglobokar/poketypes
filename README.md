@@ -15,10 +15,11 @@ Runs the app in the development mode.<br>
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 ## To Do's:
-- add ability to filter by generation
-- add ability to filter by single pokemon type
+- fix `Generation: 1, 2 & '4' more` button label confusion
+- add heatmap view of data
 - figure a better way to persist legend
   - possible click method to freeze?
 - redo percentage displays
   - add toggle to show either percents or totals
 - further styling for legend
+- optimize for mobile

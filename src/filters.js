@@ -35,33 +35,29 @@ class Filters extends React.Component {
     }
   }
 
-  toggleGen = event => {
-    let { selectedGenIds, setSelectedGenIds } = this.props
-    const selectedGenId = event.target.value
-    if (selectedGenIds.includes(selectedGenId)) {
-      selectedGenIds = selectedGenIds.filter(id => id !== selectedGenId)
-    } else {
-      selectedGenIds.push(selectedGenId)
-    }
-    setSelectedGenIds(selectedGenIds)
-  }
+  toggleCheckbox = (event, json, selectedIds, setSelectedIds) => {
+    const selectedId = event.target.value
 
-  //TODO: condense with toggleGen
-  toggleType = event => {
-    let { selectedTypeIds, setSelectedTypeIds } = this.props
-    const selectedTypeId = event.target.value
-    if (selectedTypeIds.includes(selectedTypeId)) {
-      selectedTypeIds = selectedTypeIds.filter(id => id !== selectedTypeId)
-    } else {
-      selectedTypeIds.push(selectedTypeId)
+    if (selectedId === "all") { // "All" Checkbox logic
+      if (selectedIds.length === json.length) {
+        selectedIds = []
+      } else {
+        selectedIds = json.map(item => item.id)
+      }
+    } else { // Normal Checkbox logic
+      if (selectedIds.includes(selectedId)) {
+        selectedIds = selectedIds.filter(id => id !== selectedId)
+      } else {
+        selectedIds.push(selectedId)
+      }
     }
-    setSelectedTypeIds(selectedTypeIds)
+
+    setSelectedIds(selectedIds)
   }
 
   renderFilterButton = (id, label) => {
     const ArrowIcon =
       this.state.activeButtonId === id ? ArrowDropUpIcon : ArrowDropDownIcon
-
     return (
       <Button
         color="inherit"
@@ -76,20 +72,47 @@ class Filters extends React.Component {
     )
   }
 
-  renderCheckboxes = (json, selectedIds, toggleCheckbox) => {
-    return json.map(gen => (
+  renderCheckboxes = (json, selectedIds, setSelectedIds) => {
+    // TODO: clean this up
+    const allCheckbox = (
+      <div>
+        <FormControlLabel
+          //key={gen.id}
+          control={
+            <Checkbox
+              checked={json.length === selectedIds.length}
+              onChange={e =>
+                this.toggleCheckbox(e, json, selectedIds, setSelectedIds)
+              }
+              value={"all"}
+            />
+          }
+          label={"All"}
+        />
+      </div>
+    )
+    const normalCheckboxes = json.map(gen => (
       <FormControlLabel
         key={gen.id}
         control={
           <Checkbox
             checked={selectedIds.includes(gen.id)}
-            onChange={toggleCheckbox}
+            onChange={e =>
+              this.toggleCheckbox(e, json, selectedIds, setSelectedIds)
+            }
             value={gen.id}
           />
         }
         label={gen.name}
       />
     ))
+
+    return (
+      <div>
+        {allCheckbox}
+        {normalCheckboxes}
+      </div>
+    )
   }
 
   renderFilterContent = (index, content) => {
@@ -122,9 +145,15 @@ class Filters extends React.Component {
   }
 
   render() {
-    const { selectedGenIds, selectedTypeIds } = this.props
+    const {
+      selectedGenIds,
+      setSelectedGenIds,
+      selectedTypeIds,
+      setSelectedTypeIds,
+    } = this.props
 
-    //TODO: calculate from multiple names w/out repeating "Gen"
+    //TODO: clean these up
+    //Filter By Generation -- Button and Checkboxes
     const genLabel = this.labelFormatter(
       "Generation",
       selectedGenIds,
@@ -133,9 +162,10 @@ class Filters extends React.Component {
     const genCheckboxes = this.renderCheckboxes(
       genJson,
       selectedGenIds,
-      this.toggleGen
+      setSelectedGenIds
     )
 
+    //Filter By Type -- Button and Checkboxes
     const typeLabel = this.labelFormatter(
       "Type",
       selectedTypeIds,
@@ -144,7 +174,7 @@ class Filters extends React.Component {
     const typeCheckboxes = this.renderCheckboxes(
       poketypeJson,
       selectedTypeIds,
-      this.toggleType
+      setSelectedTypeIds
     )
 
     return (
