@@ -17,7 +17,7 @@ const FilterContent = styled(Typography)`
   background: #3f51b533;
 `
 
-class App extends React.Component {
+class Filters extends React.Component {
   constructor(props) {
     super(props)
 
@@ -116,4 +116,4 @@ class App extends React.Component {
   }
 }
 
-export default App
+export default Filters

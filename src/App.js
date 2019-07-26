@@ -1,7 +1,7 @@
 import React from "react"
 import "./static/css/App.css"
 import ChordChart from "./chord-chart.js"
-import ControlTabs from "./control-tabs.js"
+import Filters from "./filters.js"
 import pokejson from "./static/json/pokemon.json"
 import poketypejson from "./static/json/pokemon-types.json"
 import genJson from "./static/json/pokemon-gens.json"
@@ -85,7 +85,7 @@ class App extends React.Component {
 
     return (
       <MuiThemeProvider theme={theme}>
-        <ControlTabs
+        <Filters
           selectedGenIds={this.state.selectedGenIds}
           setSelectedGenIds={e => {
             this.setState({ selectedGenIds: e })
