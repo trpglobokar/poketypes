@@ -107,18 +107,40 @@ class Filters extends React.Component {
     )
   }
 
+  labelFormatter = (label, selectedIds, jsonLength) => {
+    const CUT_OFF = 3
+    let ids = selectedIds.sort()
+    if (selectedIds.length === jsonLength) {
+      ids = "All"
+    } else if (selectedIds.length <= CUT_OFF) {
+      ids = ids.join(", ")
+    } else {
+      const remaining = selectedIds.length - CUT_OFF
+      ids = `${ids.slice(0, 3).join(", ")} & ${remaining} more`
+    }
+    return `${label}: ${ids}`
+  }
+
   render() {
     const { selectedGenIds, selectedTypeIds } = this.props
 
     //TODO: calculate from multiple names w/out repeating "Gen"
-    const genLabel = `Generation: ${selectedGenIds.sort().join(", ")}`
+    const genLabel = this.labelFormatter(
+      "Generation",
+      selectedGenIds,
+      genJson.length
+    )
     const genCheckboxes = this.renderCheckboxes(
       genJson,
       selectedGenIds,
       this.toggleGen
     )
 
-    const typeLabel = `Type: ${selectedTypeIds.sort().join(", ")}`
+    const typeLabel = this.labelFormatter(
+      "Type",
+      selectedTypeIds,
+      poketypeJson.length
+    )
     const typeCheckboxes = this.renderCheckboxes(
       poketypeJson,
       selectedTypeIds,
