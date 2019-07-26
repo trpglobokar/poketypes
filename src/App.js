@@ -32,7 +32,8 @@ class App extends React.Component {
     super(props)
 
     this.state = {
-      selectedGenIds: ["1"],
+      selectedGenIds: genJson.map(gen => gen.id),
+      selectedTypeIds: poketypejson.map(type => type.id),
     }
   }
 
@@ -42,12 +43,24 @@ class App extends React.Component {
 
     let pokeRange = []
     selectedGens.forEach(gen => {
-      pokeRange = pokeRange.concat(pokejson.slice(gen.range.start, gen.range.end))
+      pokeRange = pokeRange.concat(
+        pokejson.slice(gen.range.start, gen.range.end)
+      )
     })
     return pokeRange
   }
 
+  filterByType = pokeRange => {
+    const { selectedTypeIds } = this.state
+
+    return pokeRange.filter(poke =>
+      poke.type.some(t => selectedTypeIds.includes(t))
+    )
+  }
+
   render() {
+    const { selectedGenIds, selectedTypeIds } = this.state
+
     //declare blank matrix
     let pokematrix = []
     let pokematrix2 = []
@@ -60,7 +73,9 @@ class App extends React.Component {
       }
     }
 
-    const pokeRange = this.getPokeRange()
+    let pokeRange = this.getPokeRange()
+    pokeRange = this.filterByType(pokeRange)
+
     // create input data: a square matrix that show links between types
     for (let poke of pokeRange) {
       if (poke.type.length === 1) {
@@ -86,9 +101,13 @@ class App extends React.Component {
     return (
       <MuiThemeProvider theme={theme}>
         <Filters
-          selectedGenIds={this.state.selectedGenIds}
+          selectedGenIds={selectedGenIds}
           setSelectedGenIds={e => {
             this.setState({ selectedGenIds: e })
+          }}
+          selectedTypeIds={selectedTypeIds}
+          setSelectedTypeIds={e => {
+            this.setState({ selectedTypeIds: e })
           }}
         />
         <ChordChart pokematrix={pokematrix} pokematrix2={pokematrix2} />

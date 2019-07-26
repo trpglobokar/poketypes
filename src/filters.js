@@ -1,4 +1,5 @@
 import React from "react"
+import poketypeJson from "./static/json/pokemon-types.json"
 import genJson from "./static/json/pokemon-gens.json"
 import {
   AppBar,
@@ -34,17 +35,27 @@ class Filters extends React.Component {
     }
   }
 
-  toggleGen = e => {
+  toggleGen = event => {
     let { selectedGenIds, setSelectedGenIds } = this.props
-    const selectedGenId = e.target.value
-
+    const selectedGenId = event.target.value
     if (selectedGenIds.includes(selectedGenId)) {
       selectedGenIds = selectedGenIds.filter(id => id !== selectedGenId)
     } else {
       selectedGenIds.push(selectedGenId)
     }
-
     setSelectedGenIds(selectedGenIds)
+  }
+
+  //TODO: condense with toggleGen
+  toggleType = event => {
+    let { selectedTypeIds, setSelectedTypeIds } = this.props
+    const selectedTypeId = event.target.value
+    if (selectedTypeIds.includes(selectedTypeId)) {
+      selectedTypeIds = selectedTypeIds.filter(id => id !== selectedTypeId)
+    } else {
+      selectedTypeIds.push(selectedTypeId)
+    }
+    setSelectedTypeIds(selectedTypeIds)
   }
 
   renderFilterButton = (id, label) => {
@@ -65,16 +76,15 @@ class Filters extends React.Component {
     )
   }
 
-  renderGenCheckboxes = () => {
-    const { selectedGenIds } = this.props
-    return genJson.map(gen => (
+  renderCheckboxes = (json, selectedIds, toggleCheckbox) => {
+    return json.map(gen => (
       <FormControlLabel
         key={gen.id}
         control={
           <Checkbox
-            checked={selectedGenIds.includes(gen.id)}
-            onChange={this.toggleGen}
-            value={gen.id.toString()}
+            checked={selectedIds.includes(gen.id)}
+            onChange={toggleCheckbox}
+            value={gen.id}
           />
         }
         label={gen.name}
@@ -98,19 +108,33 @@ class Filters extends React.Component {
   }
 
   render() {
-    const { selectedGenIds } = this.props
+    const { selectedGenIds, selectedTypeIds } = this.props
 
     //TODO: calculate from multiple names w/out repeating "Gen"
-    const genLabel = `Generation ${selectedGenIds.sort().join(", ")}`
-    const genCheckboxes = this.renderGenCheckboxes()
+    const genLabel = `Generation: ${selectedGenIds.sort().join(", ")}`
+    const genCheckboxes = this.renderCheckboxes(
+      genJson,
+      selectedGenIds,
+      this.toggleGen
+    )
+
+    const typeLabel = `Type: ${selectedTypeIds.sort().join(", ")}`
+    const typeCheckboxes = this.renderCheckboxes(
+      poketypeJson,
+      selectedTypeIds,
+      this.toggleType
+    )
 
     return (
       <div>
         <AppBar position="static">
-          <Toolbar>{this.renderFilterButton("generation", genLabel)}</Toolbar>
+          <Toolbar>
+            {this.renderFilterButton("generation", genLabel)}
+            {this.renderFilterButton("byType", typeLabel)}
+          </Toolbar>
         </AppBar>
         {this.renderFilterContent("generation", genCheckboxes)}
-        {this.renderFilterContent("typeStuff", "Coming Soon")}
+        {this.renderFilterContent("byType", typeCheckboxes)}
       </div>
     )
   }
