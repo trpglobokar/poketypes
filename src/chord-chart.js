@@ -1,8 +1,7 @@
 import React from "react"
 import { renderToString } from "react-dom/server"
 import * as d3 from "d3"
-import poketypejson from "./pokemon-types.json"
-import "./App.css"
+import poketypejson from "./static/json/pokemon-types.json"
 import LegenDary from "./legend.js"
 
 const WRAPPER_RADIUS = 350 //390
@@ -10,6 +9,15 @@ const CHORD_RADIUS = WRAPPER_RADIUS - 85
 
 class ChordChart extends React.Component {
   componentDidMount() {
+    this.drawChart()
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    //TODO: check if props != nextProps
+    return true
+  }
+
+  componentDidUpdate() {
     this.drawChart()
   }
 
@@ -84,6 +92,7 @@ class ChordChart extends React.Component {
 
   drawChart() {
     const { pokematrix } = this.props
+    d3.select("#chord-chart").selectAll("*").remove()
 
     // Creates the svg area
     const svg = d3
