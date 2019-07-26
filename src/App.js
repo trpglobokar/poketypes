@@ -32,7 +32,7 @@ class App extends React.Component {
     super(props)
 
     this.state = {
-      selectedGenIds: ["gen1"],
+      selectedGenIds: ["1"],
     }
   }
 

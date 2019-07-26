@@ -1,6 +1,6 @@
 [
   {
-    "id": "gen1",
+    "id": "1",
     "name": "Gen 1",
     "range": {
       "start": 1,
@@ -8,7 +8,7 @@
     }
   },
   {
-    "id": "gen2",
+    "id": "2",
     "name": "Gen 2",
     "range": {
       "start": 152,
@@ -16,7 +16,7 @@
     }
   },
   {
-    "id": "gen3",
+    "id": "3",
     "name": "Gen 3",
     "range": {
       "start": 252,
@@ -24,7 +24,7 @@
     }
   },
   {
-    "id": "gen4",
+    "id": "4",
     "name": "Gen 4",
     "range": {
       "start": 387,
@@ -32,7 +32,7 @@
     }
   },
   {
-    "id": "gen5",
+    "id": "5",
     "name": "Gen 5",
     "range": {
       "start": 494,
@@ -40,7 +40,7 @@
     }
   },
   {
-    "id": "gen6",
+    "id": "6",
     "name": "Gen 6",
     "range": {
       "start": 650,
@@ -48,7 +48,7 @@
     }
   },
   {
-    "id": "gen7",
+    "id": "7",
     "name": "Gen 7",
     "range": {
       "start": 722,

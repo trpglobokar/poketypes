@@ -101,7 +101,7 @@ class Filters extends React.Component {
     const { selectedGenIds } = this.props
 
     //TODO: calculate from multiple names w/out repeating "Gen"
-    const genLabel = selectedGenIds.sort().join(", ")
+    const genLabel = `Generation ${selectedGenIds.sort().join(", ")}`
     const genCheckboxes = this.renderGenCheckboxes()
 
     return (
