@@ -1,10 +1,10 @@
 import React from "react"
-import "./App.css"
+import "./static/css/App.css"
 import ChordChart from "./chord-chart.js"
 import ControlTabs from "./control-tabs.js"
-import pokejson from "./pokemon.json"
-import poketypejson from "./pokemon-types.json"
-import genJson from "./pokemon-gens.json"
+import pokejson from "./static/json/pokemon.json"
+import poketypejson from "./static/json/pokemon-types.json"
+import genJson from "./static/json/pokemon-gens.json"
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles"
 
 const theme = createMuiTheme({

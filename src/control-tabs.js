@@ -1,5 +1,5 @@
 import React from "react"
-import genJson from "./pokemon-gens.json"
+import genJson from "./static/json/pokemon-gens.json"
 import {
   AppBar,
   Button,

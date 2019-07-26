@@ -1,8 +1,7 @@
 import React from "react"
 import { renderToString } from "react-dom/server"
 import * as d3 from "d3"
-import poketypejson from "./pokemon-types.json"
-import "./App.css"
+import poketypejson from "./static/json/pokemon-types.json"
 import LegenDary from "./legend.js"
 
 const WRAPPER_RADIUS = 350 //390

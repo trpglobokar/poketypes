@@ -1,6 +1,6 @@
 import React from "react"
 import styled from "styled-components"
-import poketypejson from "./pokemon-types.json"
+import poketypejson from "./static/json/pokemon-types.json"
 
 const PokeTileWrapper = styled.div`
   display: flex;
@@ -38,7 +38,7 @@ class LegenDary extends React.Component {
           {pokemon.map(pk => {
             return (
               <PokeTile>
-                <img alt="pokesprite" src={require(`./sprites/${pk.id}.png`)} />
+                <img alt="pokesprite" src={require(`./static/sprites/${pk.id}.png`)} />
                 {pk.name.english}
               </PokeTile>
             )
