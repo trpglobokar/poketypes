@@ -1,5 +1,6 @@
 import React from "react"
 import "./static/css/App.css"
+import HeatMap from "./heatmap.js"
 import ChordChart from "./chord-chart.js"
 import Filters from "./filters.js"
 import pokejson from "./static/json/pokemon.json"
@@ -110,6 +111,7 @@ class App extends React.Component {
             this.setState({ selectedTypeIds: e })
           }}
         />
+        {/*<HeatMap pokematrix={pokematrix} pokematrix2={pokematrix2} />*/}
         <ChordChart pokematrix={pokematrix} pokematrix2={pokematrix2} />
       </MuiThemeProvider>
     )
