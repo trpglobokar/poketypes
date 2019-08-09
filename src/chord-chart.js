@@ -3,6 +3,7 @@ import { renderToString } from "react-dom/server"
 import * as d3 from "d3"
 import poketypejson from "./static/json/pokemon-types.json"
 import LegenDary from "./legend.js"
+import IntroLegend from "./intro-legend.js"
 
 const WRAPPER_RADIUS = 350 //390
 const CHORD_RADIUS = WRAPPER_RADIUS - 85
@@ -210,7 +211,7 @@ class ChordChart extends React.Component {
           }}
         >
           <div id="chord-legend-content" style={{ padding: 16 }}>
-            Hover to start
+            <IntroLegend />
           </div>
         </div>
       </div>
