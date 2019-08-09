@@ -39,13 +39,15 @@ class Filters extends React.Component {
   toggleCheckbox = (event, json, selectedIds, setSelectedIds) => {
     const selectedId = event.target.value
 
-    if (selectedId === "all") { // "All" Checkbox logic
+    if (selectedId === "all") {
+      // "All" Checkbox logic
       if (selectedIds.length === json.length) {
         selectedIds = []
       } else {
         selectedIds = json.map(item => item.id)
       }
-    } else { // Normal Checkbox logic
+    } else {
+      // Normal Checkbox logic
       if (selectedIds.includes(selectedId)) {
         selectedIds = selectedIds.filter(id => id !== selectedId)
       } else {
@@ -116,29 +118,22 @@ class Filters extends React.Component {
     )
   }
 
-  renderRadios = (json, selectedIds, setSelectedId) => {
-    const normalCheckboxes = json.map(gen => (
+  renderRadios = (items, selectedIds, setSelectedId) => {
+    const normalCheckboxes = items.map(item => (
       <FormControlLabel
-        key={gen.id}
+        key={item.id}
         control={
           <Radio
-            checked={selectedIds.includes(gen.id)}
-            onChange={e =>
-              setSelectedId(e.target.value)
-              //this.toggleCheckbox(e, json, selectedIds, setSelectedIds)
-            }
-            value={gen.id}
+            checked={selectedIds.includes(item.id)}
+            onChange={e => setSelectedId(e.target.value)}
+            value={item.id}
           />
         }
-        label={gen.id}
+        label={item.name}
       />
     ))
 
-    return (
-      <div>
-        {normalCheckboxes}
-      </div>
-    )
+    return <div>{normalCheckboxes}</div>
   }
 
   renderFilterContent = (index, content) => {
@@ -177,7 +172,7 @@ class Filters extends React.Component {
       selectedTypeIds,
       setSelectedTypeIds,
       selectedChartType,
-      setSelectedChartType
+      setSelectedChartType,
     } = this.props
 
     //TODO: clean these up
@@ -207,13 +202,11 @@ class Filters extends React.Component {
 
     //Change ChartType -- Button and Checkboxes
     const chartTypeLabel = `Chart Type: ${selectedChartType}`
-    //TODO: make a render radios
     const chartTypeCheckboxes = this.renderRadios(
-      [{id: "heatmap"}, {id: "chord"}],
+      [{ id: "chord", name: "Chord" }, { id: "heatmap", name: "Heatmap" }],
       selectedChartType,
       setSelectedChartType
     )
-
 
     return (
       <div>

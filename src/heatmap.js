@@ -8,23 +8,22 @@ const WRAPPER_RADIUS = 390 //390
 const margin = { top: 80, right: 0, bottom: 100, left: 100 },
   width = WRAPPER_RADIUS * 2 - margin.left - margin.right,
   height = WRAPPER_RADIUS * 2 - margin.top - margin.bottom,
-  gridSize = Math.floor(width / 24),
-  legendElementWidth = gridSize * 2,
+  cellSize = Math.floor(width / 24),
   buckets = 9,
   colors = [
-    "#ffffd9",
-    "#edf8b1",
-    "#c7e9b4",
-    "#7fcdbb",
-    "#41b6c4",
-    "#1d91c0",
-    "#225ea8",
-    "#253494",
-    "#081d58",
+    "hsl(190, 100%, 90%)",
+    "hsl(190, 100%, 80%)",
+    "hsl(190, 100%, 70%)",
+    "hsl(190, 100%, 60%)",
+    "hsl(190, 100%, 50%)",
+    "hsl(190, 100%, 40%)",
+    "hsl(190, 100%, 30%)",
+    "hsl(190, 100%, 20%)",
+    "hsl(190, 100%, 10%)",
   ], // alternatively colorbrewer.YlGnBu[9]
   types = poketypejson.map(type => type.name)
 
-console.log("gridSize", gridSize)
+console.log("cellSize", cellSize)
 
 class ChordChart extends React.Component {
   async componentDidMount() {
@@ -47,12 +46,13 @@ class ChordChart extends React.Component {
       .enter()
       .append("text")
       .text(d => d)
+      //.style("fill", d => poketypejson.find(type => type.name === d).color)
       .style("text-anchor", textAnchor)
   }
 
   renderLegend(d) {
     const type1Index = d.type1 - 1,
-          type2Index = d.type2 - 1
+      type2Index = d.type2 - 1
     const pokemon = this.props.pokematrix2[type1Index][type2Index]
     const legendContent = (
       <LegenDary
@@ -66,7 +66,9 @@ class ChordChart extends React.Component {
   }
 
   async drawChart() {
-    d3.select("#heatmap").selectAll("*").remove()
+    d3.select("#heatmap")
+      .selectAll("*")
+      .remove()
 
     var data = []
     for (let type1 in this.props.pokematrix) {
@@ -89,11 +91,11 @@ class ChordChart extends React.Component {
 
     this.renderLabels(svg, "type1Labels", "end")
       .attr("x", 0)
-      .attr("y", (_d, i) => i * gridSize)
-      .attr("transform", "translate(-6," + gridSize / 1.5 + ")")
+      .attr("y", (_d, i) => i * cellSize)
+      .attr("transform", "translate(-6," + cellSize / 1.5 + ")")
 
     this.renderLabels(svg, "type2Labels", "start")
-      .attr("x", (_d, i) => i * gridSize)
+      .attr("x", (_d, i) => i * cellSize)
       .attr("y", 0)
       .attr(
         "transform",
@@ -110,25 +112,20 @@ class ChordChart extends React.Component {
       .data(data)
       .enter()
       .append("rect")
-      .attr("x", d => (d.type2 - 1) * gridSize)
-      .attr("y", d => (d.type1 - 1) * gridSize)
-      .attr("width", gridSize)
-      .attr("height", gridSize)
-      .style("fill", d => colorScale(d.value))
+      .attr("x", d => (d.type2 - 1) * cellSize)
+      .attr("y", d => (d.type1 - 1) * cellSize)
+      .attr("width", cellSize - 1)
+      .attr("height", cellSize - 1)
+      .style("fill", d => (d.value === 0 ? "#ffffff" : colorScale(d.value)))
+      .style("strokeWidth", "4px")
+      .style("stroke", "#fff")
       .on("mouseover", d => {
-        //d3.select(d3.event.currentTarget).style(
-        //  "fill",
-        //  //poketypejson[d.source.index].color
-        //)
+        d3.select(d3.event.currentTarget).style("stroke", "hsl(190, 100%, 10%)")
         this.renderLegend(d)
       })
       .on("mouseleave", d => {
-        //d3.select(d3.event.currentTarget).style(
-        //  "fill",
-        //  `${poketypejson[d.source.index].color}55`
-        //)
+        d3.select(d3.event.currentTarget).style("stroke", "#fff")
       })
-
   }
 
   render() {

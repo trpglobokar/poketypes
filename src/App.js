@@ -63,6 +63,7 @@ class App extends React.Component {
   render() {
     const { selectedGenIds, selectedTypeIds, selectedChartType } = this.state
 
+    //TODO: put this logic into the chord component
     //declare blank matrix
     let pokematrix = []
     let pokematrix2 = []
