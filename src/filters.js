@@ -6,6 +6,7 @@ import {
   Button,
   Checkbox,
   FormControlLabel,
+  Radio,
   Toolbar,
   Typography,
 } from "@material-ui/core"
@@ -38,13 +39,15 @@ class Filters extends React.Component {
   toggleCheckbox = (event, json, selectedIds, setSelectedIds) => {
     const selectedId = event.target.value
 
-    if (selectedId === "all") { // "All" Checkbox logic
+    if (selectedId === "all") {
+      // "All" Checkbox logic
       if (selectedIds.length === json.length) {
         selectedIds = []
       } else {
         selectedIds = json.map(item => item.id)
       }
-    } else { // Normal Checkbox logic
+    } else {
+      // Normal Checkbox logic
       if (selectedIds.includes(selectedId)) {
         selectedIds = selectedIds.filter(id => id !== selectedId)
       } else {
@@ -115,6 +118,24 @@ class Filters extends React.Component {
     )
   }
 
+  renderRadios = (items, selectedIds, setSelectedId) => {
+    const normalCheckboxes = items.map(item => (
+      <FormControlLabel
+        key={item.id}
+        control={
+          <Radio
+            checked={selectedIds.includes(item.id)}
+            onChange={e => setSelectedId(e.target.value)}
+            value={item.id}
+          />
+        }
+        label={item.name}
+      />
+    ))
+
+    return <div>{normalCheckboxes}</div>
+  }
+
   renderFilterContent = (index, content) => {
     const { activeButtonId } = this.state
     return (
@@ -150,6 +171,8 @@ class Filters extends React.Component {
       setSelectedGenIds,
       selectedTypeIds,
       setSelectedTypeIds,
+      selectedChartType,
+      setSelectedChartType,
     } = this.props
 
     //TODO: clean these up
@@ -177,16 +200,26 @@ class Filters extends React.Component {
       setSelectedTypeIds
     )
 
+    //Change ChartType -- Button and Checkboxes
+    const chartTypeLabel = `Chart Type: ${selectedChartType}`
+    const chartTypeCheckboxes = this.renderRadios(
+      [{ id: "chord", name: "Chord" }, { id: "heatmap", name: "Heatmap" }],
+      selectedChartType,
+      setSelectedChartType
+    )
+
     return (
       <div>
         <AppBar position="static">
           <Toolbar>
             {this.renderFilterButton("generation", genLabel)}
             {this.renderFilterButton("byType", typeLabel)}
+            {this.renderFilterButton("chartType", chartTypeLabel)}
           </Toolbar>
         </AppBar>
         {this.renderFilterContent("generation", genCheckboxes)}
         {this.renderFilterContent("byType", typeCheckboxes)}
+        {this.renderFilterContent("chartType", chartTypeCheckboxes)}
       </div>
     )
   }

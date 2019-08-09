@@ -85,14 +85,21 @@ class ChordChart extends React.Component {
   renderLegend(d) {
     const pokemon = this.props.pokematrix2[d.source.index][d.target.index]
     const legendContent = (
-      <LegenDary source={d.source} target={d.target} pokemon={pokemon} />
+      <LegenDary
+        type1Index={d.source.index}
+        type2Index={d.target.index}
+        value={(d.source.value + d.target.value) / 2}
+        pokemon={pokemon}
+      />
     )
     d3.select("#chord-legend-content").html(renderToString(legendContent))
   }
 
   drawChart() {
     const { pokematrix } = this.props
-    d3.select("#chord-chart").selectAll("*").remove()
+    d3.select("#chord-chart")
+      .selectAll("*")
+      .remove()
 
     // Creates the svg area
     const svg = d3

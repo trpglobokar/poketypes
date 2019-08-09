@@ -20,18 +20,18 @@ const PokeTile = styled.div`
 
 class LegenDary extends React.Component {
   render() {
-    const { source, target, pokemon } = this.props
+    const { type1Index, type2Index, value, pokemon } = this.props
 
     return (
       <div>
         <h3>Pokemon Types</h3>
         <div>
-          <b>Type 1:</b> {poketypejson[source.index].name}&nbsp;&nbsp;&nbsp;
-          <b>Type 2:</b> {poketypejson[target.index].name}
+          <b>Type 1:</b> {poketypejson[type1Index].name}&nbsp;&nbsp;&nbsp;
+          <b>Type 2:</b> {poketypejson[type2Index].name}
         </div>
         <br />
         <div>
-          <b>Number of Pokes:</b> {(source.value + target.value) / 2}
+          <b>Number of Pokes:</b> {value}
         </div>
         <br />
         <PokeTileWrapper>

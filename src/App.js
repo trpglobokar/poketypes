@@ -1,5 +1,6 @@
 import React from "react"
 import "./static/css/App.css"
+import HeatMap from "./heatmap.js"
 import ChordChart from "./chord-chart.js"
 import Filters from "./filters.js"
 import pokejson from "./static/json/pokemon.json"
@@ -34,6 +35,7 @@ class App extends React.Component {
     this.state = {
       selectedGenIds: genJson.map(gen => gen.id),
       selectedTypeIds: poketypejson.map(type => type.id),
+      selectedChartType: "chord"
     }
   }
 
@@ -59,8 +61,9 @@ class App extends React.Component {
   }
 
   render() {
-    const { selectedGenIds, selectedTypeIds } = this.state
+    const { selectedGenIds, selectedTypeIds, selectedChartType } = this.state
 
+    //TODO: put this logic into the chord component
     //declare blank matrix
     let pokematrix = []
     let pokematrix2 = []
@@ -109,8 +112,17 @@ class App extends React.Component {
           setSelectedTypeIds={e => {
             this.setState({ selectedTypeIds: e })
           }}
+          selectedChartType={selectedChartType}
+          setSelectedChartType={e => {
+            this.setState({ selectedChartType: e })
+          }}
         />
-        <ChordChart pokematrix={pokematrix} pokematrix2={pokematrix2} />
+        {selectedChartType === "heatmap" && (
+          <HeatMap pokematrix={pokematrix} pokematrix2={pokematrix2} />
+        )}
+        {selectedChartType === "chord" && (
+          <ChordChart pokematrix={pokematrix} pokematrix2={pokematrix2} />
+        )}
       </MuiThemeProvider>
     )
   }
