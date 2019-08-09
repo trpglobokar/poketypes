@@ -6,6 +6,7 @@ import {
   Button,
   Checkbox,
   FormControlLabel,
+  Radio,
   Toolbar,
   Typography,
 } from "@material-ui/core"
@@ -115,6 +116,31 @@ class Filters extends React.Component {
     )
   }
 
+  renderRadios = (json, selectedIds, setSelectedId) => {
+    const normalCheckboxes = json.map(gen => (
+      <FormControlLabel
+        key={gen.id}
+        control={
+          <Radio
+            checked={selectedIds.includes(gen.id)}
+            onChange={e =>
+              setSelectedId(e.target.value)
+              //this.toggleCheckbox(e, json, selectedIds, setSelectedIds)
+            }
+            value={gen.id}
+          />
+        }
+        label={gen.id}
+      />
+    ))
+
+    return (
+      <div>
+        {normalCheckboxes}
+      </div>
+    )
+  }
+
   renderFilterContent = (index, content) => {
     const { activeButtonId } = this.state
     return (
@@ -150,6 +176,8 @@ class Filters extends React.Component {
       setSelectedGenIds,
       selectedTypeIds,
       setSelectedTypeIds,
+      selectedChartType,
+      setSelectedChartType
     } = this.props
 
     //TODO: clean these up
@@ -177,16 +205,28 @@ class Filters extends React.Component {
       setSelectedTypeIds
     )
 
+    //Change ChartType -- Button and Checkboxes
+    const chartTypeLabel = `Chart Type: ${selectedChartType}`
+    //TODO: make a render radios
+    const chartTypeCheckboxes = this.renderRadios(
+      [{id: "heatmap"}, {id: "chord"}],
+      selectedChartType,
+      setSelectedChartType
+    )
+
+
     return (
       <div>
         <AppBar position="static">
           <Toolbar>
             {this.renderFilterButton("generation", genLabel)}
             {this.renderFilterButton("byType", typeLabel)}
+            {this.renderFilterButton("chartType", chartTypeLabel)}
           </Toolbar>
         </AppBar>
         {this.renderFilterContent("generation", genCheckboxes)}
         {this.renderFilterContent("byType", typeCheckboxes)}
+        {this.renderFilterContent("chartType", chartTypeCheckboxes)}
       </div>
     )
   }

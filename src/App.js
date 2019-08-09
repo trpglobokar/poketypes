@@ -35,6 +35,7 @@ class App extends React.Component {
     this.state = {
       selectedGenIds: genJson.map(gen => gen.id),
       selectedTypeIds: poketypejson.map(type => type.id),
+      selectedChartType: "chord"
     }
   }
 
@@ -60,7 +61,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { selectedGenIds, selectedTypeIds } = this.state
+    const { selectedGenIds, selectedTypeIds, selectedChartType } = this.state
 
     //declare blank matrix
     let pokematrix = []
@@ -110,9 +111,17 @@ class App extends React.Component {
           setSelectedTypeIds={e => {
             this.setState({ selectedTypeIds: e })
           }}
+          selectedChartType={selectedChartType}
+          setSelectedChartType={e => {
+            this.setState({ selectedChartType: e })
+          }}
         />
-        {/*<HeatMap pokematrix={pokematrix} pokematrix2={pokematrix2} />*/}
-        <ChordChart pokematrix={pokematrix} pokematrix2={pokematrix2} />
+        {selectedChartType === "heatmap" && (
+          <HeatMap pokematrix={pokematrix} pokematrix2={pokematrix2} />
+        )}
+        {selectedChartType === "chord" && (
+          <ChordChart pokematrix={pokematrix} pokematrix2={pokematrix2} />
+        )}
       </MuiThemeProvider>
     )
   }
