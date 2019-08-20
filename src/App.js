@@ -121,7 +121,7 @@ class App extends React.Component {
           <HeatMap pokematrix={pokematrix} pokematrix2={pokematrix2} />
         )}
         {selectedChartType === "chord" && (
-          <ChordChart pokematrix={pokematrix} pokematrix2={pokematrix2} />
+          <ChordChart pokematrix={pokematrix} pokematrix2={pokematrix2} pokelength={pokeRange.length} />
         )}
       </MuiThemeProvider>
     )

@@ -24,8 +24,6 @@ const margin = { top: 80, right: 0, bottom: 100, left: 100 },
   ], // alternatively colorbrewer.YlGnBu[9]
   types = poketypejson.map(type => type.name)
 
-console.log("cellSize", cellSize)
-
 class ChordChart extends React.Component {
   async componentDidMount() {
     await this.drawChart()

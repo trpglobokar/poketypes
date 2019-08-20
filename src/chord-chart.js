@@ -22,19 +22,18 @@ class ChordChart extends React.Component {
     this.drawChart()
   }
 
-  addLabel(
+  addLabel = (
     group,
     className,
     tickInterval,
-    endMarker,
     fontSize,
     outerPosition,
     getContent,
     appendContent
-  ) {
+  ) => {
     const gMan = group
       .selectAll(className)
-      .data(d => getContent(d, tickInterval, endMarker))
+      .data(d => getContent(d, tickInterval))
       .enter()
       .append("g")
       .attr("transform", function(d) {
@@ -70,10 +69,15 @@ class ChordChart extends React.Component {
   }
 
   // Returns array of tick angles & values for a given group and step
-  getTicks(d, step, endMarker) {
-    const k = (d.endAngle - d.startAngle) / 100
-    return d3.range(0, endMarker, step).map(function(value) {
-      return { value: `${value}%`, angle: value * k + d.startAngle }
+  getTicks = (d, step) => {
+    const totalPokes = this.props.pokelength
+    const k = (d.endAngle - d.startAngle) / d.value
+
+    return d3.range(0, d.value, totalPokes / step).map(function(value) {
+      return {
+        value: `${parseInt((value / totalPokes) * 100)}%`,
+        angle: value * k + d.startAngle,
+      }
     })
   }
 
@@ -166,8 +170,7 @@ class ChordChart extends React.Component {
     this.addLabel(
       group,
       ".group-tick",
-      12.5,
-      101,
+      100,
       9,
       CHORD_RADIUS,
       this.getTicks,
@@ -178,8 +181,7 @@ class ChordChart extends React.Component {
     this.addLabel(
       group,
       ".group-tick-label",
-      25,
-      100,
+      20,
       9,
       CHORD_RADIUS,
       this.getTicks,
@@ -190,7 +192,6 @@ class ChordChart extends React.Component {
       group,
       ".group-type-label",
       1,
-      2,
       12,
       CHORD_RADIUS + 30,
       this.getTypeLabels,
