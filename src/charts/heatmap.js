@@ -1,9 +1,9 @@
 import React from "react"
 import { renderToString } from "react-dom/server"
 import * as d3 from "d3"
-import poketypejson from "./static/json/pokemon-types.json"
-import LegenDary from "./legend.js"
-import IntroLegend from "./intro-legend.js"
+import poketypejson from "../static/json/pokemon-types.json"
+import LegenDary from "../legend.js"
+import IntroLegend from "../intro-legend.js"
 
 const WRAPPER_RADIUS = 390 //390
 const margin = { top: 80, right: 0, bottom: 100, left: 100 },
