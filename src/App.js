@@ -6,6 +6,9 @@ import Filters from "./filters.js"
 import pokejson from "./static/json/pokemon.json"
 import poketypejson from "./static/json/pokemon-types.json"
 import genJson from "./static/json/pokemon-gens.json"
+
+import { getPokeMatrix } from "./utils/utils.js"
+
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles"
 
 const theme = createMuiTheme({
@@ -35,12 +38,12 @@ class App extends React.Component {
     this.state = {
       selectedGenIds: genJson.map(gen => gen.id),
       selectedTypeIds: poketypejson.map(type => type.id),
-      selectedChartType: "chord"
+      selectedChartType: "chord",
     }
   }
 
   getPokeRange = _e => {
-    const { selectedGenIds } = this.state
+    const { selectedGenIds, selectedTypeIds } = this.state
     const selectedGens = genJson.filter(gen => selectedGenIds.includes(gen.id))
 
     let pokeRange = []
@@ -49,57 +52,18 @@ class App extends React.Component {
         pokejson.slice(gen.range.start, gen.range.end)
       )
     })
-    return pokeRange
-  }
-
-  filterByType = pokeRange => {
-    const { selectedTypeIds } = this.state
 
     return pokeRange.filter(poke =>
       poke.type.some(t => selectedTypeIds.includes(t))
     )
   }
 
-  render() {
+  render = () => {
     const { selectedGenIds, selectedTypeIds, selectedChartType } = this.state
 
-    //TODO: put this logic into the chord component
-    //declare blank matrix
-    let pokematrix = []
-    let pokematrix2 = []
-    for (const i in poketypejson) {
-      pokematrix[i] = []
-      pokematrix2[i] = []
-      for (const j in poketypejson) {
-        pokematrix[i][j] = 0
-        pokematrix2[i][j] = []
-      }
-    }
+    const pokeRange = this.getPokeRange()
+    const { pokeMatrix, pokeMatrix2 } = getPokeMatrix(pokeRange)
 
-    let pokeRange = this.getPokeRange()
-    pokeRange = this.filterByType(pokeRange)
-
-    // create input data: a square matrix that show links between types
-    for (let poke of pokeRange) {
-      if (poke.type.length === 1) {
-        const index0 = poketypejson.findIndex(
-          type => type.name === poke.type[0]
-        )
-        pokematrix[index0][index0] = pokematrix[index0][index0] + 1
-        pokematrix2[index0][index0].push(poke)
-      } else {
-        const index1 = poketypejson.findIndex(
-          type => type.name === poke.type[0]
-        )
-        const index2 = poketypejson.findIndex(
-          type => type.name === poke.type[1]
-        )
-        pokematrix[index1][index2] = pokematrix[index1][index2] + 1
-        pokematrix[index2][index1] = pokematrix[index2][index1] + 1
-        pokematrix2[index1][index2].push(poke)
-        pokematrix2[index2][index1].push(poke)
-      }
-    }
 
     return (
       <MuiThemeProvider theme={theme}>
@@ -118,10 +82,17 @@ class App extends React.Component {
           }}
         />
         {selectedChartType === "heatmap" && (
-          <HeatMap pokematrix={pokematrix} pokematrix2={pokematrix2} />
+          <HeatMap
+            pokematrix={pokeMatrix}
+            pokematrix2={pokeMatrix2}
+          />
         )}
         {selectedChartType === "chord" && (
-          <ChordChart pokematrix={pokematrix} pokematrix2={pokematrix2} pokelength={pokeRange.length} />
+          <ChordChart
+            pokematrix={pokeMatrix}
+            pokematrix2={pokeMatrix2}
+            pokelength={pokeRange.length}
+          />
         )}
       </MuiThemeProvider>
     )
